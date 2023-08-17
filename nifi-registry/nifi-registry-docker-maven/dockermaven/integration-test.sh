@@ -22,10 +22,10 @@ VERSION=$2
 
 container_name=nifi-registry-${TAG}-integration-test
 
-trap "{ docker rm -f ${container_name}; }" EXIT
+trap "{ docker ps -qaf Name=${container_name} | xargs docker rm -f; }" EXIT
 
 echo "Deleting any existing ${container_name} containers"
-docker rm -f ${container_name};
+docker ps -qaf Name=${container_name} | xargs --no-run-if-empty docker rm -f;
 
 echo "Checking that all files are owned by NiFi"
 test -z $(docker run --rm --entrypoint /bin/bash apache/nifi-registry:${TAG} -c "find /opt/nifi-registry ! -user nifi")

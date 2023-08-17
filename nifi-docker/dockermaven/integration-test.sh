@@ -21,10 +21,10 @@ TAG=$1
 VERSION=$2
 
 
-trap '{ docker rm -f nifi-${TAG}-integration-test; }' EXIT
+trap '{ docker ps -qaf Name="nifi-${TAG}-integration-test" | xargs --no-run-if-empty docker rm -f; }' EXIT
 
 echo "Deleting any existing nifi-${TAG}-integration-test containers"
-docker rm -f nifi-${TAG}-integration-test;
+docker ps -qaf Name="nifi-${TAG}-integration-test" | xargs --no-run-if-empty docker rm -f;
 
 echo "Checking that all files are owned by NiFi"
 test -z "$(docker run --rm --entrypoint /bin/bash "apache/nifi:${TAG}" -c "find /opt/nifi ! -user nifi")"
